@@ -9,6 +9,12 @@ public class AssetBundleManager : MonoBehaviour
     public string bundleURL;
     public int version;
 
+    private AssetBundle photoAssetBundle;
+    public Object[] PhotoAssetBundle { get { return photoAssetBundle.LoadAllAssets(); } }
+
+    private AssetBundle albumAssetBundle;
+    public Object[] AlbumAssetBundle { get { return albumAssetBundle.LoadAllAssets(); } }
+
     private void Start()
     {
         StartCoroutine(LoadAssetBundle());
@@ -27,6 +33,7 @@ public class AssetBundleManager : MonoBehaviour
         AssetBundle myAssetBundle = DownloadHandlerAssetBundle.GetContent(v);
         #endregion
 
+        #region test
         #region manifest 
         // load
         //AssetBundle assetBundle = AssetBundle.LoadFromFile(bundleURL + "/AssetBundles"); // file:// 붙이면 안됨
@@ -44,18 +51,22 @@ public class AssetBundleManager : MonoBehaviour
         //Instantiate(cube);
         //GameObject capsule = Instantiate(myobjectBundle.LoadAsset<GameObject>("capsule"));
         //capsule.transform.Translate(Vector3.up * 2);
+        #endregion
 
         AssetBundleManifest manifest = myAssetBundle.LoadAsset<AssetBundleManifest>("AssetBundleManifest");
 
         foreach(string s in manifest.GetAllAssetBundles())
         {
-            print($"s : {s}");
-            AssetBundle sub = AssetBundle.LoadFromFile(string.Format("/{0}/{1}", bundleURL, s));
-            //Object[] objs = sub.LoadAllAssets();
+            //print($"s : {s}");
+            //AssetBundle sub = AssetBundle.LoadFromFile(Path.Combine(bundleURL, s));
+            //sub.LoadAllAssets();
         }
 
+        albumAssetBundle = AssetBundle.LoadFromFile(Path.Combine(bundleURL, "jmj/albums"));
+        photoAssetBundle = AssetBundle.LoadFromFile(Path.Combine(bundleURL, "jmj/photos"));
         
-
         print($"done");
+
+        DataContainer.instance.Init(AlbumAssetBundle, PhotoAssetBundle);
     }
 }

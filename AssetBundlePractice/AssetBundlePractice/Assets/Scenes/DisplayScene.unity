@@ -802,6 +802,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfd95ea41b4834c47b7fc0efc56c5416, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bundleURL: 
+  version: 0
 --- !u!1 &375779528
 GameObject:
   m_ObjectHideFlags: 0
@@ -2214,27 +2216,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a026c689cc5e6a149aa3319145f9c037, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  photos:
-  - {fileID: 21300000, guid: dd7411e1fbc31514288dd2667612a7c1, type: 3}
-  - {fileID: 21300000, guid: b63d82275df78b54a8b2bd5a7f433af3, type: 3}
-  - {fileID: 21300000, guid: 0dc6acf5a24b4284299c6df566fa25ea, type: 3}
-  - {fileID: 21300000, guid: 22c1e6303c251d84fb863d79fec1f8bc, type: 3}
-  - {fileID: 21300000, guid: f5c0bce23dc33c0498575b3f961c59d6, type: 3}
-  - {fileID: 21300000, guid: 630bf4922535e0942851fcfb03ffc8e0, type: 3}
-  - {fileID: 21300000, guid: c85b470ca85ac7349900a84fe605e630, type: 3}
-  - {fileID: 21300000, guid: e90ddd7b932ae6242808a29d36df5fef, type: 3}
-  - {fileID: 21300000, guid: 61e8e9c114a324045bd4c200f3bf758e, type: 3}
-  - {fileID: 21300000, guid: ac345da9fbcadac499c8697676716590, type: 3}
-  - {fileID: 21300000, guid: 207add954ac032b4f8dcb92f79e433fd, type: 3}
-  - {fileID: 21300000, guid: 7f98b0bfa8a314040bac399f8314c661, type: 3}
-  - {fileID: 21300000, guid: e313afee0e0c7304bbeae6e3fa7532b6, type: 3}
-  - {fileID: 21300000, guid: e4d7f3a95a8655c4a8246abd4e954a46, type: 3}
-  albums:
-  - {fileID: 8300000, guid: 92f7278fc6169704fbb06000593b0ad4, type: 3}
-  - {fileID: 8300000, guid: a9841ee79771e0e4fa4cad88014ded9e, type: 3}
-  - {fileID: 8300000, guid: dea3ed92e48a7ee4d9d1b92357227f6c, type: 3}
-  - {fileID: 8300000, guid: f4cc45dcee49a2748980509afc75c004, type: 3}
-  - {fileID: 8300000, guid: a4412deb7339d4941848168bcc7aaabd, type: 3}
+  photos: []
+  albums: []
 --- !u!4 &1808526686
 Transform:
   m_ObjectHideFlags: 0

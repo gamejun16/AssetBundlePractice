@@ -24,6 +24,8 @@ public class CanvasManager : MonoBehaviour
         if(numb == 1) // album
         {
             album.gameObject.SetActive(!album.gameObject.activeSelf);
+            if (!album.gameObject.activeSelf)
+                Camera.main.GetComponent<AudioSource>().Stop();
         }
     }
 }

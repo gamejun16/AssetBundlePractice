@@ -1,0 +1,10 @@
+ManifestFileVersion: 0
+CRC: 2064943775
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: jmj/photos
+      Dependencies: {}
+    Info_1:
+      Name: jmj/albums
+      Dependencies: {}

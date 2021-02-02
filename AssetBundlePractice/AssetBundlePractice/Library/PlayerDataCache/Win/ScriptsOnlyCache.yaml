@@ -64,8 +64,6 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 82
       Script: {instanceID: 0}
-    - Class: 83
-      Script: {instanceID: 0}
     - Class: 104
       Script: {instanceID: 0}
     - Class: 108
@@ -87,25 +85,25 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 11566}
     - Class: 114
-      Script: {instanceID: 11638}
+      Script: {instanceID: 11636}
     - Class: 114
-      Script: {instanceID: 11652}
+      Script: {instanceID: 11650}
     - Class: 114
-      Script: {instanceID: 11784}
+      Script: {instanceID: 11782}
+    - Class: 114
+      Script: {instanceID: 11860}
     - Class: 114
       Script: {instanceID: 11884}
     - Class: 114
       Script: {instanceID: 12088}
     - Class: 114
-      Script: {instanceID: 12418}
+      Script: {instanceID: 12160}
     - Class: 114
-      Script: {instanceID: 12814}
+      Script: {instanceID: 12420}
     - Class: 114
-      Script: {instanceID: 13198}
+      Script: {instanceID: 12816}
     - Class: 114
-      Script: {instanceID: 14870}
-    - Class: 114
-      Script: {instanceID: 16652}
+      Script: {instanceID: 13200}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -311,6 +309,12 @@ ScriptsOnlyBuild:
     className: Shadow
   - hash:
       serializedVersion: 2
+      Hash: 094a5fc40ce502fa6a6bc4e15b01804b
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: AssetBundleManager
+  - hash:
+      serializedVersion: 2
       Hash: cc4274b586df3c02688bac01b88bd16c
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.EventSystems
@@ -351,6 +355,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: SignalTrack
+  - hash:
+      serializedVersion: 2
+      Hash: ac7a4bb67d9dbd1d5be46f210721e3ae
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: CanvasManager
   - hash:
       serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
@@ -573,19 +583,8 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: PlayableTrack
-  - hash:
-      serializedVersion: 2
-      Hash: ac7a4bb67d9dbd1d5be46f210721e3ae
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: CanvasManager
-  - hash:
-      serializedVersion: 2
-      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: AssetBundleManager
   platform: 5
   scenePathNames:
   - Assets/Scenes/DisplayScene.unity
-  playerPath: D:/Desktop/Univ/5-1/Workspace/AssetBundlePractice/AssetBundlePractice/Build/AssetBundlePractice.exe
+  playerPath: "D:/Desktop/Univ/5-1/Workspace/AssetBundlePractice/AssetBundlePractice/Build
+    1.0.4 only \uC5D0\uC14B\uBC88\uB4E4/AssetBundlePractice.exe"

@@ -1,0 +1,20 @@
+ManifestFileVersion: 0
+CRC: 1720703794
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 4d663775fa87a3587f6683136d7d9c7c
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 3f7d0c5e0986ec71841622bcb2f9be1c
+HashAppended: 0
+ClassTypes:
+- Class: 83
+  Script: {instanceID: 0}
+Assets:
+- Assets/Resources/Albums/Breatha - josh pan.mp3
+- Assets/Resources/Albums/Awful - josh pan.mp3
+- Assets/Resources/Albums/Stairway - Patrick Patrikios.mp3
+- Assets/Resources/Albums/June - Bobby Richards.mp3
+- Assets/Resources/Albums/19th Floor - Bobby Richards.mp3
+Dependencies: []
