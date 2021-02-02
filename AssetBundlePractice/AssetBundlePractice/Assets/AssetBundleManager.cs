@@ -9,6 +9,9 @@ public class AssetBundleManager : MonoBehaviour
     public string bundleURL;
     public int version;
 
+    string albumURL;
+    string photoURL;
+
     private AssetBundle photoAssetBundle;
     public Object[] PhotoAssetBundle { get { return photoAssetBundle.LoadAllAssets(); } }
 
@@ -25,10 +28,14 @@ public class AssetBundleManager : MonoBehaviour
         while (!Caching.ready)
             yield return null;
 
-        bundleURL = Application.streamingAssetsPath + "/AssetBundles";
+        //bundleURL = Application.streamingAssetsPath + "/AssetBundles";
+        bundleURL = "https://www.dropbox.com/s/2r8w68kign84qof/AssetBundles?dl=1";
+        albumURL = "https://www.dropbox.com/s/845gjrr5a4morp0/albums?dl=1";
+        photoURL = "https://www.dropbox.com/s/5322kz4ysosmais/photos?dl=1";
 
         #region assetbundle 로드
-        var v = UnityWebRequestAssetBundle.GetAssetBundle("file://" + bundleURL + "/AssetBundles"); // file:// 붙여야됨
+        //var v = UnityWebRequestAssetBundle.GetAssetBundle("file://" + bundleURL + "/AssetBundles"); // file:// 붙여야됨
+        var v = UnityWebRequestAssetBundle.GetAssetBundle(bundleURL); 
         yield return v.SendWebRequest();
         AssetBundle myAssetBundle = DownloadHandlerAssetBundle.GetContent(v);
         #endregion
@@ -55,16 +62,24 @@ public class AssetBundleManager : MonoBehaviour
 
         AssetBundleManifest manifest = myAssetBundle.LoadAsset<AssetBundleManifest>("AssetBundleManifest");
 
-        foreach(string s in manifest.GetAllAssetBundles())
-        {
-            //print($"s : {s}");
-            //AssetBundle sub = AssetBundle.LoadFromFile(Path.Combine(bundleURL, s));
-            //sub.LoadAllAssets();
-        }
+        //foreach(string s in manifest.GetAllAssetBundles())
+        //{
+        //print($"s : {s}");
+        //AssetBundle sub = AssetBundle.LoadFromFile(Path.Combine(bundleURL, s));
+        //sub.LoadAllAssets();
+        //}
 
-        albumAssetBundle = AssetBundle.LoadFromFile(Path.Combine(bundleURL, "jmj/albums"));
-        photoAssetBundle = AssetBundle.LoadFromFile(Path.Combine(bundleURL, "jmj/photos"));
-        
+        //albumAssetBundle = AssetBundle.LoadFromFile(Path.Combine(bundleURL, "jmj/albums"));
+        //photoAssetBundle = AssetBundle.LoadFromFile(Path.Combine(bundleURL, "jmj/photos"));
+
+        v = UnityWebRequestAssetBundle.GetAssetBundle(albumURL);
+        yield return v.SendWebRequest();
+        albumAssetBundle = DownloadHandlerAssetBundle.GetContent(v);
+
+        v = UnityWebRequestAssetBundle.GetAssetBundle(photoURL);
+        yield return v.SendWebRequest();
+        photoAssetBundle= DownloadHandlerAssetBundle.GetContent(v);
+
         print($"done");
 
         DataContainer.instance.Init(AlbumAssetBundle, PhotoAssetBundle);
