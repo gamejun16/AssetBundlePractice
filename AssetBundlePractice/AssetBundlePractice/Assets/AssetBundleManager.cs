@@ -1,18 +1,61 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
+using System.IO;
 
 public class AssetBundleManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public string bundleURL;
+    public int version;
+
+    private void Start()
     {
-        
+        StartCoroutine(LoadAssetBundle());
     }
 
-    // Update is called once per frame
-    void Update()
+    IEnumerator LoadAssetBundle()
     {
+        while (!Caching.ready)
+            yield return null;
+
+        bundleURL = Application.streamingAssetsPath + "/AssetBundles";
+
+        #region assetbundle 로드
+        var v = UnityWebRequestAssetBundle.GetAssetBundle("file://" + bundleURL + "/AssetBundles"); // file:// 붙여야됨
+        yield return v.SendWebRequest();
+        AssetBundle myAssetBundle = DownloadHandlerAssetBundle.GetContent(v);
+        #endregion
+
+        #region manifest 
+        // load
+        //AssetBundle assetBundle = AssetBundle.LoadFromFile(bundleURL + "/AssetBundles"); // file:// 붙이면 안됨
+        //AssetBundleManifest manifest = assetBundle.LoadAsset<AssetBundleManifest>("AssetBundleManifest");
+
+        // dependency check
+        //string[] dependencies = manifest.GetAllDependencies("jmj/myobject");
+        //foreach (string s in dependencies)
+        //{
+        //    AssetBundle.LoadFromFile(Path.Combine(bundleURL, s));
+        //}
+        #endregion
+
+        //GameObject cube = myobjectBundle.LoadAsset<GameObject>("Cube");
+        //Instantiate(cube);
+        //GameObject capsule = Instantiate(myobjectBundle.LoadAsset<GameObject>("capsule"));
+        //capsule.transform.Translate(Vector3.up * 2);
+
+        AssetBundleManifest manifest = myAssetBundle.LoadAsset<AssetBundleManifest>("AssetBundleManifest");
+
+        foreach(string s in manifest.GetAllAssetBundles())
+        {
+            print($"s : {s}");
+            AssetBundle sub = AssetBundle.LoadFromFile(string.Format("/{0}/{1}", bundleURL, s));
+            //Object[] objs = sub.LoadAllAssets();
+        }
+
         
+
+        print($"done");
     }
 }
