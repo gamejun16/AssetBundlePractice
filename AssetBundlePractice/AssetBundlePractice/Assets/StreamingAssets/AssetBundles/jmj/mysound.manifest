@@ -1,0 +1,33 @@
+ManifestFileVersion: 0
+CRC: 3656147430
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: c48a874685d9b379c33c59e0659ca9f7
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 3f7d0c5e0986ec71841622bcb2f9be1c
+HashAppended: 0
+ClassTypes:
+- Class: 83
+  Script: {instanceID: 0}
+Assets:
+- "Assets/Resources/AssetBundles/Sounds/[BGM] \uC18C\uC2DC\uC624\uADF8\uB7A8 - Underwater-Menu-Loop.wav"
+- "Assets/Resources/AssetBundles/Sounds/[BGM] \uB098\uBE44\uD3EC\uC639 - Jungle-Menu-Light-Loop.wav"
+- "Assets/Resources/AssetBundles/Sounds/[BGM] \uC2A4\uD06C\uB7A8\uBE14 \uBB38\uC7A5
+  - Pizz Menu BASIC LOOP.wav"
+- "Assets/Resources/AssetBundles/Sounds/[BGM] \uCFE0\uD0B9\uD0C0\uC784 - Scores LOOP
+  C.wav"
+- "Assets/Resources/AssetBundles/Sounds/[BGM] \uD130\uCE6D\uBE0C\uB808\uC2A4 - \uC794\uC794\uD788
+  \uBC00\uB824\uC624\uB294 \uD30C\uB3C4\uC18C\uB9AC(by\uD55C\uAD6D\uC800\uC791\uAD8C\uC704\uC6D0\uD68C).mp3"
+- "Assets/Resources/AssetBundles/Sounds/[\uD6A8\uACFC\uC74C] \uBBF8\uB2C8\uAC8C\uC784
+  (\uC77C\uBC18\uACB0\uACFC) - Star Collect.wav"
+- "Assets/Resources/AssetBundles/Sounds/[\uD6A8\uACFC\uC74C] \uBBF8\uB2C8\uAC8C\uC784
+  (\uC88B\uC740\uACB0\uACFC) - You Win (5).wav"
+- "Assets/Resources/AssetBundles/Sounds/[\uD6A8\uACFC\uC74C] \uD074\uB9AD\uC74C(\uC77C\uBC18)
+  - Click (15).wav"
+- "Assets/Resources/AssetBundles/Sounds/[\uD6A8\uACFC\uC74C] \uC624\uB2F5(\uBBF8\uB2C8\uAC8C\uC784)
+  - Fantasy Click (2).wav"
+- "Assets/Resources/AssetBundles/Sounds/[\uD6A8\uACFC\uC74C] \uC815\uB2F5(\uBBF8\uB2C8\uAC8C\uC784)
+  - Coins (23).wav"
+Dependencies: []
