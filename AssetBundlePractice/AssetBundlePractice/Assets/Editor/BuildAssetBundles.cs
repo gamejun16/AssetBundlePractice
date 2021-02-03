@@ -10,4 +10,11 @@ public class BuildAssetBundles : MonoBehaviour
     {
         BuildPipeline.BuildAssetBundles("Assets/StreamingAssets/AssetBundles", BuildAssetBundleOptions.None, BuildTarget.StandaloneWindows);
     }
+
+    [MenuItem("Bundles/Clear Cache")]
+    static public void ClearingCache()
+    {
+        Caching.ClearCache();
+        print("cache clearing done");
+    }
 }
