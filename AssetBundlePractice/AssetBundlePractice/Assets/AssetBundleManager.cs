@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using System.IO;
+using UnityEngine.UI;
 
 public class AssetBundleManager : MonoBehaviour
 {
@@ -20,6 +21,9 @@ public class AssetBundleManager : MonoBehaviour
     string albumURL;
     string photoURL;
 
+    [SerializeField] private Transform patchScreen;
+    [SerializeField] private Text loadingText;
+    [SerializeField] private Text loadingSubText;
 
     //List<int> patchList = new List<int>(); // 패치 해당되는 row(행) 값 저장
     string[,] versionTableFromLocal;
@@ -45,7 +49,27 @@ public class AssetBundleManager : MonoBehaviour
         //photoURL = "https://drive.google.com/uc?export=download&id=1QZ6y01x-kRa6KG8euQn9OrE1QTHYgNcY";
 
         //StartCoroutine(LoadAssetBundle());
-        StartCoroutine(CheckBundleVersion());
+        StartCoroutine(LoadAssetBundleProgress());
+    }
+
+    IEnumerator LoadAssetBundleProgress()
+    {
+        patchScreen.gameObject.SetActive(true);
+
+        loadingText.text = "패치 내역을 확인하는 중";
+        yield return CheckBundleVersion();
+
+        loadingText.text = "패치 진행 중";
+        yield return DownloadBundleFromServerToLocal();
+
+        loadingText.text = "곧 게임이 시작됩니다.";
+        yield return LoadAssetBundleFromLocal();
+        
+        DataContainer.instance.Init(AlbumAssetBundle, PhotoAssetBundle);
+
+        patchScreen.gameObject.SetActive(false);
+
+        print($"done");
     }
 
     /// <summary>
@@ -53,10 +77,14 @@ public class AssetBundleManager : MonoBehaviour
     /// </summary>
     IEnumerator CheckBundleVersion()
     {
+        loadingSubText.text = "인터넷에 접속합니다.";
+
         // # 1. 서버 버전 테이블 load
         using (UnityWebRequest uwr = UnityWebRequest.Get(versionTableURL))
         {
-            //uwr.downloadHandler = new DownloadHandlerBuffer();
+            loadingSubText.text = "서버 버전 테이블을 조회합니다.";
+            yield return new WaitForSeconds(0.5f);
+
             yield return uwr.SendWebRequest();
             string[,] versionTableFromServer;
 
@@ -73,6 +101,9 @@ public class AssetBundleManager : MonoBehaviour
             }
 
             // # 2. 로컬 버전 테이블 load
+            loadingSubText.text = "로컬 버전 테이블을 조회합니다.";
+            yield return new WaitForSeconds(0.5f);
+
             StreamReader sr = new StreamReader(localVersionTablePath);
             
             rows = sr.ReadToEnd().Split('\n');
@@ -90,6 +121,9 @@ public class AssetBundleManager : MonoBehaviour
             // # 3. 비교 및 패치 진행할 번들 정보 추출
             // # 3-1. 패치 정보 로컬 버전 테이블에 기록
             //   >>>  그냥 서버 버전 테이블로 덮어쓰기?
+            loadingSubText.text = "패치 정보를 비교하는 중입니다.";
+            yield return new WaitForSeconds(0.5f);
+
             for (int r = 1; r < versionTableFromServer.GetLength(0); r++)
             {
                 // 버전 비교. 패치가 필요한 번들 발견
@@ -103,7 +137,7 @@ public class AssetBundleManager : MonoBehaviour
                     patchListInfo.Add(s);
                 }
             }
-
+            
             // 패치가 필요하다면. 서버 버전 테이블을 내려받아 로컬 버전테이블에 덮어쓰기
             if (patchListInfo.Count != 0)
             {
@@ -111,13 +145,10 @@ public class AssetBundleManager : MonoBehaviour
                 FileStream fs = new FileStream(localVersionTablePath, FileMode.Create);
                 fs.Write(data, 0, data.Length);
                 fs.Dispose();
-
-                print("패치 완료");
             }
         }
         print($"version check done");
 
-        yield return DownloadBundleFromServerToLocal();
     }
     
 
@@ -127,6 +158,9 @@ public class AssetBundleManager : MonoBehaviour
     IEnumerator DownloadBundleFromServerToLocal()
     {
         print($"download server2local start {patchListInfo.Count}");
+
+        loadingSubText.text = "서버로부터 파일을 내려받는 중 입니다.";
+        yield return new WaitForSeconds(0.5f);
 
         foreach (string[] s in patchListInfo)
         {
@@ -156,8 +190,6 @@ public class AssetBundleManager : MonoBehaviour
             fs.Close();
         }
         print($"download server to local done");
-
-        yield return LoadAssetBundleFromLocal();
     }
 
     /// <summary>
@@ -166,6 +198,9 @@ public class AssetBundleManager : MonoBehaviour
     IEnumerator LoadAssetBundleFromLocal()
     {
         print("loadAssetBundleFromLocal start");
+
+        loadingSubText.text = "로컬 데이터를 읽어들이는 중입니다.";
+        yield return new WaitForSeconds(0.5f);
 
         for (int row=1;row< versionTableFromLocal.GetLength(0); row++)
         {
@@ -191,12 +226,11 @@ public class AssetBundleManager : MonoBehaviour
             
         }
 
+        loadingSubText.text = "곧 게임이 시작됩니다.";
+
         yield return null;
         print("loadAssetBundleFromLocal done");
         
-        print($"done");
-
-        DataContainer.instance.Init(AlbumAssetBundle, PhotoAssetBundle);
     }
 
 
