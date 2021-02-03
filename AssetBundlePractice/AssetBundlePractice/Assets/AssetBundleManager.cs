@@ -22,6 +22,7 @@ public class AssetBundleManager : MonoBehaviour
 
 
     //List<int> patchList = new List<int>(); // 패치 해당되는 row(행) 값 저장
+    string[,] versionTableFromLocal;
     List<string[]> patchListInfo = new List<string[]>();
 
     private AssetBundle rootAssetBundle;
@@ -43,17 +44,13 @@ public class AssetBundleManager : MonoBehaviour
         //albumURL = "https://drive.google.com/uc?export=download&id=1pW90lypOZG5GFeRwULsEee-dQcAwRLfu";
         //photoURL = "https://drive.google.com/uc?export=download&id=1QZ6y01x-kRa6KG8euQn9OrE1QTHYgNcY";
 
-        //rootAssetBundle.Unload(false);
-        //photoAssetBundle.Unload(false);
-        //albumAssetBundle.Unload(false);
-
-        StartCoroutine(LoadAssetBundle());
+        //StartCoroutine(LoadAssetBundle());
+        StartCoroutine(CheckBundleVersion());
     }
 
     /// <summary>
     /// 서버 버전테이블과 로컬 버전테이블을 비교. 패치가 필요한 번들 정보 추출
     /// </summary>
-    /// <returns></returns>
     IEnumerator CheckBundleVersion()
     {
         // # 1. 서버 버전 테이블 load
@@ -64,9 +61,9 @@ public class AssetBundleManager : MonoBehaviour
             string[,] versionTableFromServer;
 
             string[] rows = uwr.downloadHandler.text.Split('\n');
-            versionTableFromServer = new string[rows.Length - 1, rows[0].Split(',').Length];
+            versionTableFromServer = new string[rows.Length-1, rows[0].Split(',').Length];
 
-            for (int r = 1; r < versionTableFromServer.GetLength(0); r++)
+            for (int r = 0; r < versionTableFromServer.GetLength(0); r++)
             {
                 string[] cols = rows[r].Split(',');
                 for (int c = 0; c < versionTableFromServer.GetLength(1); c++)
@@ -77,11 +74,10 @@ public class AssetBundleManager : MonoBehaviour
 
             // # 2. 로컬 버전 테이블 load
             StreamReader sr = new StreamReader(localVersionTablePath);
-            string[,] versionTableFromLocal;
-
+            
             rows = sr.ReadToEnd().Split('\n');
-            versionTableFromLocal = new string[rows.Length - 1, rows[0].Split(',').Length];
-            for (int r = 1; r < versionTableFromLocal.GetLength(0); r++)
+            versionTableFromLocal = new string[rows.Length-1, rows[0].Split(',').Length];
+            for (int r = 0; r < versionTableFromLocal.GetLength(0); r++)
             {
                 string[] cols = rows[r].Split(',');
                 for (int c = 0; c < versionTableFromLocal.GetLength(1); c++)
@@ -96,28 +92,16 @@ public class AssetBundleManager : MonoBehaviour
             //   >>>  그냥 서버 버전 테이블로 덮어쓰기?
             for (int r = 1; r < versionTableFromServer.GetLength(0); r++)
             {
-                //// 패치가 필요한 번들 발견
-                //if(string.Compare(versionTableFromServer[r,(int)VersionTableColumn.version], versionTableFromLocal[r, (int)VersionTableColumn.version]) != 0)
-                //{
-                //    //print($"{versionTableFromServer[r, (int)VersionTableColumn.fileName]} need to patch from ver.{versionTableFromLocal[r,(int)VersionTableColumn.version]} to ver.{versionTableFromServer[r, (int)VersionTableColumn.version]}");
-                //    //patchList.Add(r);
+                // 버전 비교. 패치가 필요한 번들 발견
+                if (string.Compare(versionTableFromServer[r, (int)VersionTableColumn.version], versionTableFromLocal[r, (int)VersionTableColumn.version]) != 0)
+                {
+                    string[] s = new string[3];
+                    s[(int)VersionTableColumn.fileName] = versionTableFromServer[r, (int)VersionTableColumn.fileName];
+                    s[(int)VersionTableColumn.version] = versionTableFromServer[r, (int)VersionTableColumn.version];
+                    s[(int)VersionTableColumn.downloadLink] = versionTableFromServer[r, (int)VersionTableColumn.downloadLink];
 
-                //    string[] s = new string[3];
-                //    s[(int)VersionTableColumn.fileName] = versionTableFromServer[r, (int)VersionTableColumn.fileName];
-                //    s[(int)VersionTableColumn.version] = versionTableFromServer[r, (int)VersionTableColumn.version];
-                //    s[(int)VersionTableColumn.downloadLink] = versionTableFromServer[r, (int)VersionTableColumn.downloadLink];
-
-                //    patchLists.Add(s);
-                //}
-
-                // 전부 저장?
-                string[] s = new string[3];
-
-                s[(int)VersionTableColumn.fileName] = versionTableFromServer[r, (int)VersionTableColumn.fileName];
-                s[(int)VersionTableColumn.version] = versionTableFromServer[r, (int)VersionTableColumn.version];
-                s[(int)VersionTableColumn.downloadLink] = versionTableFromServer[r, (int)VersionTableColumn.downloadLink];
-
-                patchListInfo.Add(s);
+                    patchListInfo.Add(s);
+                }
             }
 
             // 패치가 필요하다면. 서버 버전 테이블을 내려받아 로컬 버전테이블에 덮어쓰기
@@ -132,7 +116,90 @@ public class AssetBundleManager : MonoBehaviour
             }
         }
         print($"version check done");
+
+        yield return DownloadBundleFromServerToLocal();
     }
+    
+
+    /// <summary>
+    /// 로컬에 변동된(혹은 없는) 에셋 번들을 서버로부터 다운로드 및 파일 생성
+    /// </summary>
+    IEnumerator DownloadBundleFromServerToLocal()
+    {
+        print($"download server2local start {patchListInfo.Count}");
+
+        foreach (string[] s in patchListInfo)
+        {
+            string originName = s[(int)VersionTableColumn.fileName];
+            string fileDirectory = Path.Combine(Application.streamingAssetsPath, "AssetBundles");
+            string fileName;
+            string version = s[(int)VersionTableColumn.version];
+            string downloadURL = s[(int)VersionTableColumn.downloadLink];
+            
+            string[] split = originName.Split('/');
+            for(int i=0;i<split.Length - 1; i++)
+                fileDirectory = Path.Combine(fileDirectory, split[i]);
+            fileName = split[split.Length - 1] + ".unity3d";
+
+            UnityWebRequest request = UnityWebRequest.Get(downloadURL);
+            yield return request.SendWebRequest();
+            
+            if (!Directory.Exists(fileDirectory))
+            {
+                Directory.CreateDirectory(fileDirectory);
+                print($"{fileDirectory} directory created now");
+            }
+
+            // 파일로 저장
+            FileStream fs = new FileStream(Path.Combine(fileDirectory, fileName), FileMode.Create);
+            fs.Write(request.downloadHandler.data, 0, (int)request.downloadedBytes);
+            fs.Close();
+        }
+        print($"download server to local done");
+
+        yield return LoadAssetBundleFromLocal();
+    }
+
+    /// <summary>
+    /// 로컬에 저장된 에셋 번들을 로드?
+    /// </summary>
+    IEnumerator LoadAssetBundleFromLocal()
+    {
+        print("loadAssetBundleFromLocal start");
+
+        for (int row=1;row< versionTableFromLocal.GetLength(0); row++)
+        {
+            string originName = versionTableFromLocal[row,(int)VersionTableColumn.fileName];
+            string fileDirectory = Application.streamingAssetsPath + "/AssetBundles";
+            string fileName;
+            
+            string[] split = originName.Split('/');
+            for (int j = 0; j < split.Length - 1; j++)
+                fileDirectory = fileDirectory + "/" +  split[j];
+            fileName = split[split.Length - 1];
+
+            string path = fileDirectory + "/" + fileName;
+
+            if (string.Compare(fileName, "AssetBundles") == 0)
+                rootAssetBundle = AssetBundle.LoadFromFile(path + ".unity3d");
+            
+            else if(string.Compare(fileName, "albums") == 0)                
+                albumAssetBundle = AssetBundle.LoadFromFile(path + ".unity3d");
+            
+            else if (string.Compare(fileName, "photos") == 0)
+                photoAssetBundle = AssetBundle.LoadFromFile(path + ".unity3d");
+            
+        }
+
+        yield return null;
+        print("loadAssetBundleFromLocal done");
+        
+        print($"done");
+
+        DataContainer.instance.Init(AlbumAssetBundle, PhotoAssetBundle);
+    }
+
+
 
     IEnumerator LoadAssetBundle()
     {
@@ -236,9 +303,7 @@ public class AssetBundleManager : MonoBehaviour
         print($"done");
 
         DataContainer.instance.Init(AlbumAssetBundle, PhotoAssetBundle);
-
-        albumAssetBundle.Unload(false);
-        photoAssetBundle.Unload(false);
+        
     }
 
 }
