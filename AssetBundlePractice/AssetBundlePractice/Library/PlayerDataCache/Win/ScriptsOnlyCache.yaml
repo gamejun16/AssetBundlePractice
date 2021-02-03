@@ -9,6 +9,7 @@ ScriptsOnlyBuild:
     - MusicPlayer
     Unity.2D.Tilemap.Editor.dll:
     - UnityEditor.Tilemaps.GridBrush
+    - UnityEditor.Tilemaps.GridBrushEditor
     - UnityEditor.Tilemaps.GridPaintPaletteClipboard
     - UnityEditor.Tilemaps.GridPaintPaletteWindow
     - UnityEditor.Tilemaps.GridPaintingState
@@ -62,6 +63,8 @@ ScriptsOnlyBuild:
     - Class: 81
       Script: {instanceID: 0}
     - Class: 82
+      Script: {instanceID: 0}
+    - Class: 83
       Script: {instanceID: 0}
     - Class: 104
       Script: {instanceID: 0}
@@ -586,4 +589,4 @@ ScriptsOnlyBuild:
   scenePathNames:
   - Assets/Scenes/DisplayScene.unity
   playerPath: D:/Desktop/Univ/5-1/Workspace/AssetBundlePractice/AssetBundlePractice/Build
-    1.0.9/AssetBundlePractice.exe
+    1.0.10 yesResource/AssetBundlePractice.exe
