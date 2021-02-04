@@ -9,6 +9,7 @@ ScriptsOnlyBuild:
     - MusicPlayer
     Unity.2D.Tilemap.Editor.dll:
     - UnityEditor.Tilemaps.GridBrush
+    - UnityEditor.Tilemaps.GridBrushEditor
     - UnityEditor.Tilemaps.GridPaintPaletteClipboard
     - UnityEditor.Tilemaps.GridPaintPaletteWindow
     - UnityEditor.Tilemaps.GridPaintingState
@@ -70,39 +71,39 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 11230}
     - Class: 114
-      Script: {instanceID: 11248}
-    - Class: 114
-      Script: {instanceID: 11422}
+      Script: {instanceID: 11250}
     - Class: 114
       Script: {instanceID: 11424}
     - Class: 114
-      Script: {instanceID: 11462}
+      Script: {instanceID: 11426}
     - Class: 114
       Script: {instanceID: 11464}
     - Class: 114
-      Script: {instanceID: 11518}
+      Script: {instanceID: 11466}
     - Class: 114
-      Script: {instanceID: 11566}
+      Script: {instanceID: 11520}
     - Class: 114
-      Script: {instanceID: 11636}
+      Script: {instanceID: 11568}
     - Class: 114
-      Script: {instanceID: 11650}
+      Script: {instanceID: 11638}
     - Class: 114
-      Script: {instanceID: 11782}
+      Script: {instanceID: 11652}
     - Class: 114
-      Script: {instanceID: 11860}
+      Script: {instanceID: 11784}
     - Class: 114
-      Script: {instanceID: 11884}
+      Script: {instanceID: 11862}
     - Class: 114
-      Script: {instanceID: 12088}
+      Script: {instanceID: 11886}
     - Class: 114
-      Script: {instanceID: 12160}
+      Script: {instanceID: 12090}
     - Class: 114
-      Script: {instanceID: 12420}
+      Script: {instanceID: 12162}
     - Class: 114
-      Script: {instanceID: 12816}
+      Script: {instanceID: 12422}
     - Class: 114
-      Script: {instanceID: 13200}
+      Script: {instanceID: 12818}
+    - Class: 114
+      Script: {instanceID: 13202}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
