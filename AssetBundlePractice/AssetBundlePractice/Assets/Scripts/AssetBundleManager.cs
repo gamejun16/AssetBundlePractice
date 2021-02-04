@@ -54,27 +54,25 @@ public class AssetBundleManager : MonoBehaviour
         float _totalTime = Time.time;
 
         #region old version
-        loadingText.text = "패치 내역을 확인하는 중";
-        yield return CheckBundleVersion();
+        //loadingText.text = "패치 내역을 확인하는 중";
+        //yield return CheckBundleVersion();
 
-        loadingText.text = "패치 진행 중";
-        yield return DownloadBundleFromServerToLocal();
+        //loadingText.text = "패치 진행 중";
+        //yield return DownloadBundleFromServerToLocal();
 
-        loadingText.text = "곧 게임이 시작됩니다.";
-        yield return LoadAssetBundleFromLocal();
+        //loadingText.text = "곧 게임이 시작됩니다.";
+        //yield return LoadAssetBundleFromLocal();
         #endregion
 
         #region new version
-        //loadingText.text = "버전 정보를 받아오는 중";
-        //yield return NewCheckBundleVersion();
+        loadingText.text = "버전 정보를 받아오는 중";
+        yield return NewCheckBundleVersion();
 
-        //loadingText.text = "패치를 진행하는 중";
-        //yield return NewLoadAssetBundleFromCache();
+        loadingText.text = "패치를 진행하는 중";
+        yield return NewLoadAssetBundleFromCache();
         #endregion
 
         DataContainer.instance.Init(AlbumAssetBundle, PhotoAssetBundle);
-
-        print($"total tile : {Time.time - _totalTime} sec");
         patchScreen.gameObject.SetActive(false);
 
         print($"done");
@@ -154,8 +152,6 @@ public class AssetBundleManager : MonoBehaviour
             
             else if (string.Compare(fileName, "jmj/photos") == 0)
                 photoAssetBundle = DownloadHandlerAssetBundle.GetContent(v);
-            
-            print($"{fileName} loading time : {Time.time - beginTime} sec");
         }
 
         loadingSubText.text = "곧 게임이 시작됩니다.";

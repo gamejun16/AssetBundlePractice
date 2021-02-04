@@ -44,4 +44,10 @@ public class DataContainer : MonoBehaviour
                 photos.Add(obj as Sprite);
         }
     }
+
+    public void ClearCache()
+    {
+        Caching.ClearCache();
+        Application.Quit();
+    }
 }
