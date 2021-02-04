@@ -44,4 +44,5 @@ public class DataContainer : MonoBehaviour
                 photos.Add(obj as Sprite);
         }
     }
+    
 }
