@@ -15,12 +15,6 @@ public class DisplayAlbum : MonoBehaviour
         rootFolderPath = $"{Application.dataPath}/Resources/Albums/";
         Display();
     }
-
-    private void OnEnable()
-    {
-        
-    }
-
     
 
     private void Display()
@@ -34,7 +28,7 @@ public class DisplayAlbum : MonoBehaviour
             Transform t = Instantiate(displayPiece, displayRoot).transform;
             t.GetChild(0).gameObject.SetActive(true);
             t.GetChild(0).GetComponent<MusicPlayer>().myClip = v[i];
-            t.GetComponentInChildren<Text>().text = v[i].name;
+            t.GetChild(0).GetChild(0).GetComponent<Text>().text = v[i].name;
         }
     }
 }

@@ -24,13 +24,15 @@ public class AssetBundleManager : MonoBehaviour
     private string[,] serverVersionTable; // 서버 버전 테이블
     
     private AssetBundle rootAssetBundle; // 에셋 번들
-    private AssetBundle photoAssetBundle; //
     private AssetBundle albumAssetBundle; //
+    private AssetBundle photoAssetBundle; //
+    private AssetBundle videoAssetBundle; //
 
     public Object[] RootAssetBundle { get { return rootAssetBundle.LoadAllAssets(); } }
-    public Object[] PhotoAssetBundle { get { return photoAssetBundle.LoadAllAssets(); } }
     public Object[] AlbumAssetBundle { get { return albumAssetBundle.LoadAllAssets(); } }
-    
+    public Object[] PhotoAssetBundle { get { return photoAssetBundle.LoadAllAssets(); } }
+    public Object[] VideoAssetBundle{ get { return videoAssetBundle.LoadAllAssets(); } }
+
 
     [Header("Patch Progress UI")]
     [SerializeField] private Transform patchScreen;
@@ -63,16 +65,19 @@ public class AssetBundleManager : MonoBehaviour
         //loadingText.text = "곧 게임이 시작됩니다.";
         //yield return LoadAssetBundleFromLocal();
         #endregion
-
+        
         #region new version
         loadingText.text = "버전 정보를 받아오는 중";
-        yield return NewCheckBundleVersion();
+        yield return CheckBundleVersion();
 
         loadingText.text = "패치를 진행하는 중";
-        yield return NewLoadAssetBundleFromCache();
+        yield return SerialLoadAssetBundle();
+        //yield return ParallerLoadAssetBundle();
         #endregion
 
-        DataContainer.instance.Init(AlbumAssetBundle, PhotoAssetBundle);
+        print($"total time : {Time.time - _totalTime}");
+
+        DataContainer.instance.Init(AlbumAssetBundle, PhotoAssetBundle, VideoAssetBundle);
         patchScreen.gameObject.SetActive(false);
 
         print($"done");
@@ -81,7 +86,7 @@ public class AssetBundleManager : MonoBehaviour
     /// <summary>
     /// 서버 버전 테이블 저장
     /// </summary>
-    IEnumerator NewCheckBundleVersion()
+    IEnumerator CheckBundleVersion()
     {
         loadingSubText.text = "인터넷에 접속합니다.";
 
@@ -115,9 +120,9 @@ public class AssetBundleManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 서버 버전을 기반으로 캐시 혹은 웹서버에서 에셋 번들 로드
+    /// 서버 버전을 기반으로 캐시 혹은 웹서버에서 순차적으로 에셋 번들 로드
     /// </summary>
-    IEnumerator NewLoadAssetBundleFromCache()
+    IEnumerator SerialLoadAssetBundle()
     {
         for (int row = 1; row < serverVersionTable.GetLength(0); row++)
         {
@@ -152,15 +157,104 @@ public class AssetBundleManager : MonoBehaviour
             
             else if (string.Compare(fileName, "jmj/photos") == 0)
                 photoAssetBundle = DownloadHandlerAssetBundle.GetContent(v);
+
+            else if (string.Compare(fileName, "jmj/videos") == 0)
+                videoAssetBundle = DownloadHandlerAssetBundle.GetContent(v);
         }
 
         loadingSubText.text = "곧 게임이 시작됩니다.";
     }
-    
+
+    /// <summary>
+    /// 서버 버전을 기반으로 캐시 혹은 웹서버에서 병렬적으로 에셋 번들 로드
+    /// </summary>
+    IEnumerator ParallerLoadAssetBundle()
+    {
+        yield return null;
+
+        // 병렬 통신 개수
+        int parallerSize = 1;
+        
+        Queue<System.Tuple<UnityWebRequest, string>> waitQueue = new Queue<System.Tuple<UnityWebRequest, string>>();
+        List<System.Tuple<UnityWebRequest, string>> progressList = new List<System.Tuple<UnityWebRequest, string>>();
+
+        // 대기 큐 생성
+        for (int row = 1; row < serverVersionTable.GetLength(0); row++)
+        {
+            float beginTime = Time.time;
+
+            loadingSubText.text = $"패치를 진행하고 있습니다. ({row}/{serverVersionTable.GetLength(0) - 1})";
+
+            string fileName = serverVersionTable[row, (int)VersionTableColumn.fileName];
+            string version = serverVersionTable[row, (int)VersionTableColumn.version];
+            string downloadURL = serverVersionTable[row, (int)VersionTableColumn.downloadLink];
+
+            var v = UnityWebRequestAssetBundle.GetAssetBundle(downloadURL, uint.Parse(version), 0);
+            System.Tuple<UnityWebRequest, string> tp = new System.Tuple<UnityWebRequest, string>(v, fileName);
+            waitQueue.Enqueue(tp);
+        }
+
+        print($"대기 큐 생성 완료");
+
+        // 진행
+        while (waitQueue.Count > 0 || progressList.Count > 0)
+        {
+            if(progressList.Count < parallerSize && waitQueue.Count > 0)
+            {
+                var v = waitQueue.Peek();
+                waitQueue.Dequeue();
+
+                print($"{v.Item2} load start");
+
+                v.Item1.SendWebRequest();
+                progressList.Add(v);
+            }
+
+            for(int i=0;i<progressList.Count; i++)
+            {
+                if (progressList[i].Item1.isDone)
+                {
+                    UnityWebRequest v = progressList[i].Item1;
+                    string fileName = progressList[i].Item2;
+
+                    print($"{progressList[i].Item2} load done");
+
+                    if (string.Compare(fileName, "AssetBundles") == 0)
+                        rootAssetBundle = DownloadHandlerAssetBundle.GetContent(v);
+
+                    else if (string.Compare(fileName, "jmj/albums") == 0)
+                        albumAssetBundle = DownloadHandlerAssetBundle.GetContent(v);
+
+                    else if (string.Compare(fileName, "jmj/photos") == 0)
+                        photoAssetBundle = DownloadHandlerAssetBundle.GetContent(v);
+
+                    else if (string.Compare(fileName, "jmj/videos") == 0)
+                        videoAssetBundle = DownloadHandlerAssetBundle.GetContent(v);
+
+                    progressList.RemoveAt(i);
+                }
+            }
+            yield return null;
+        }
+
+
+        //if (string.Compare(fileName, "AssetBundles") == 0)
+        //    rootAssetBundle = DownloadHandlerAssetBundle.GetContent(v);
+
+        //else if (string.Compare(fileName, "jmj/albums") == 0)
+        //    albumAssetBundle = DownloadHandlerAssetBundle.GetContent(v);
+
+        //else if (string.Compare(fileName, "jmj/photos") == 0)
+        //    photoAssetBundle = DownloadHandlerAssetBundle.GetContent(v);
+
+
+        loadingSubText.text = "곧 게임이 시작됩니다.";
+    }
+
     /// <summary>
     /// 서버 버전테이블과 로컬 버전테이블을 비교. 패치가 필요한 번들 정보 추출
     /// </summary>
-    IEnumerator CheckBundleVersion()
+    IEnumerator OldCheckBundleVersion()
     {
         loadingSubText.text = "인터넷에 접속합니다.";
 
@@ -234,7 +328,7 @@ public class AssetBundleManager : MonoBehaviour
     /// <summary>
     /// 로컬에 변동된(혹은 없는) 에셋 번들을 서버로부터 다운로드 및 파일 생성
     /// </summary>
-    IEnumerator DownloadBundleFromServerToLocal()
+    IEnumerator OldDownloadBundleFromServerToLocal()
     {
         print($"start download {patchListInfo.Count} bundles from server to local ");
 
@@ -272,7 +366,7 @@ public class AssetBundleManager : MonoBehaviour
     /// <summary>
     /// 로컬에 저장된 에셋 번들을 로드
     /// </summary>
-    IEnumerator LoadAssetBundleFromLocal()
+    IEnumerator OldLoadAssetBundleFromLocal()
     {
         print("start load assetBundle from local");
 
@@ -325,7 +419,7 @@ public class AssetBundleManager : MonoBehaviour
     {
 
         // 패치 정보 확인
-        yield return CheckBundleVersion();
+        yield return OldCheckBundleVersion();
 
         // 패치할 데이터가 없다면? 종료 ?
         if (patchListInfo.Count == 0)
@@ -422,7 +516,7 @@ public class AssetBundleManager : MonoBehaviour
 
         print($"done");
 
-        DataContainer.instance.Init(AlbumAssetBundle, PhotoAssetBundle);
+        DataContainer.instance.Init(AlbumAssetBundle, PhotoAssetBundle, VideoAssetBundle);
         
     }
 
