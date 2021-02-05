@@ -1,0 +1,28 @@
+ManifestFileVersion: 0
+CRC: 742576559
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 4dfc401b12a5601273178fc956372257
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 3f7d0c5e0986ec71841622bcb2f9be1c
+HashAppended: 0
+ClassTypes:
+- Class: 83
+  Script: {instanceID: 0}
+Assets:
+- Assets/NoBuildResources/Albums/Sunset n Beachz - Ofshane.mp3
+- Assets/NoBuildResources/Albums/Breatha - josh pan.mp3
+- Assets/NoBuildResources/Albums/One More Time - Ofshane.mp3
+- Assets/NoBuildResources/Albums/Meet & Fun! - Ofshane.mp3
+- Assets/NoBuildResources/Albums/Snake on the Beach - Nico Staf.mp3
+- Assets/NoBuildResources/Albums/Awful - josh pan.mp3
+- Assets/NoBuildResources/Albums/Fast and Run - Nico Staf.mp3
+- Assets/NoBuildResources/Albums/Trickling Up - Godmode.mp3
+- Assets/NoBuildResources/Albums/Blue Dream - Cheel.mp3
+- Assets/NoBuildResources/Albums/Stairway - Patrick Patrikios.mp3
+- Assets/NoBuildResources/Albums/Sunday Rain - Cheel.mp3
+- Assets/NoBuildResources/Albums/June - Bobby Richards.mp3
+- Assets/NoBuildResources/Albums/19th Floor - Bobby Richards.mp3
+Dependencies: []
